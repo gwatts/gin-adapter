@@ -11,7 +11,7 @@ wrapped handler and ensure the next middlware on the chain is called correctly.
 
 Example of using it with the nosurf CSRF package
 
-  engine.Use(adapter.Wrap(nosurf.New))
+  engine.Use(adapter.Wrap(nosurf.NewPure))
 
 If the middleware you're using doesn't comply with the f(http.Handler) http.Handler
 interface, or if extra configuration of the middleware is required, use New

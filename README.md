@@ -13,7 +13,7 @@ having a function that takes an `http.Handler` to wrap and returning another
 `http.Handler`, you can use `adapter.Wrap`
 
 ```golang
-engine.Use(adapter.Wrap(nosurf.New)) 
+engine.Use(adapter.Wrap(nosurf.NewPure)) 
 ```
 
 If you need to pass in the wrapped handler explictly (eg. via configuration),
