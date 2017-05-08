@@ -10,7 +10,9 @@ use common Go HTTP middleware packages with the
 
 For example, if you have some middleware that uses the common pattern of
 having a function that takes an `http.Handler` to wrap and returning another
-`http.Handler`, you can use `adapter.Wrap`
+`http.Handler`, you can use `adapter.Wrap`.  
+
+Using the [nosurf CSRF middleware](https://github.com/justinas/nosurf/):
 
 ```golang
 engine.Use(adapter.Wrap(nosurf.NewPure)) 
