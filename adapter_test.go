@@ -22,10 +22,19 @@ func newTestMiddleware(h http.Handler) http.Handler {
 	return &testMiddleware{h}
 }
 
+type newTestMiddlewareWriter struct {
+	http.ResponseWriter
+}
+
+func (ntmw newTestMiddlewareWriter) Write(b []byte) (int, error) {
+	ntmw.Header().Set("middle-write", "true")
+	return ntmw.ResponseWriter.Write(b)
+}
+
 func (h *testMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := context.WithValue(r.Context(), "test", "value")
 	w.Header().Set("middle-header", "true")
-	h.h.ServeHTTP(w, r.WithContext(ctx))
+	h.h.ServeHTTP(newTestMiddlewareWriter{w}, r.WithContext(ctx))
 }
 
 func TestContextPassthrough(t *testing.T) {
@@ -90,6 +99,9 @@ func TestWrap(t *testing.T) {
 	engine.Use(Wrap(newTestMiddleware))
 	engine.GET("/", func(c *gin.Context) {
 		assert.Equal("value", c.Request.Context().Value("test"), "context should be passsed through from middleware")
+
+		// This Write validates that the writed, modified by the wrapped middleware, is propagated.
+		c.Writer.Write([]byte("test"))
 	})
 
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -97,4 +109,5 @@ func TestWrap(t *testing.T) {
 	engine.ServeHTTP(w, req)
 
 	assert.Equal("true", w.Header().Get("middle-header"))
+	assert.Equal("true", w.Header().Get("middle-write"))
 }
