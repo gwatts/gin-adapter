@@ -100,7 +100,7 @@ func TestWrap(t *testing.T) {
 	engine.GET("/", func(c *gin.Context) {
 		assert.Equal("value", c.Request.Context().Value("test"), "context should be passsed through from middleware")
 
-		// This Write validates that the writed, modified by the wrapped middleware, is propagated.
+		// This Write validates that the writer, modified by the wrapped middleware, is propagated.
 		c.Writer.Write([]byte("test"))
 	})
 
