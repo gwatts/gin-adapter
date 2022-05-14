@@ -1,4 +1,4 @@
-module gwatts/gin-adapter
+module github.com/gwatts/gin-adapter
 
 go 1.18
 
