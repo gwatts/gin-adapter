@@ -1,7 +1,7 @@
 # Gin Middleware Adapter
 
 [![GoDoc](https://godoc.org/github.com/gwatts/gin-adapter?status.svg)](https://godoc.org/github.com/gwatts/gin-adapter)
-[![Build Status](https://travis-ci.org/gwatts/gin-adapter.svg?branch=master)](https://travis-ci.org/gwatts/gin-adapter)
+![Build Status](https://github.com/gwatts/gin-adapter/actions/workflows/go.yml/badge.svg)
 
 
 This package provides a simple adapter to make it easier to 
