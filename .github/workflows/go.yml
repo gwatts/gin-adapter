@@ -1,0 +1,23 @@
+name: Go tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  go_tests:
+    strategy:
+      matrix:
+        go-version: ['1.17', '1.18']
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - run: go test .
