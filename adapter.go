@@ -71,7 +71,9 @@ type connectHandler struct{}
 func (h *connectHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	state := r.Context().Value(h).(*middlewareCtx)
 	defer func(r *http.Request) { state.ctx.Request = r }(state.ctx.Request)
+	defer func(w gin.ResponseWriter) { state.ctx.Writer = w }(state.ctx.Writer)
 	state.ctx.Request = r
+	state.ctx.Writer = swap(state.ctx.Writer, w)
 	state.childCalled = true
 	state.ctx.Next()
 }
@@ -79,4 +81,26 @@ func (h *connectHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 type middlewareCtx struct {
 	ctx         *gin.Context
 	childCalled bool
+}
+
+// Swap delegates the http.ResponseWriter interface to hw and falls back for the other interfaces on gw.
+func swap(gw gin.ResponseWriter, hw http.ResponseWriter) swappedResponseWriter {
+	return swappedResponseWriter{ResponseWriter: gw, w: hw}
+}
+
+type swappedResponseWriter struct {
+	gin.ResponseWriter
+	w http.ResponseWriter
+}
+
+func (w swappedResponseWriter) Header() http.Header {
+	return w.w.Header()
+}
+
+func (w swappedResponseWriter) Write(b []byte) (int, error) {
+	return w.w.Write(b)
+}
+
+func (w swappedResponseWriter) WriteHeader(statusCode int) {
+	w.w.WriteHeader(statusCode)
 }
